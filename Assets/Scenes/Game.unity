@@ -489,7 +489,7 @@ MonoBehaviour:
     m_Bits: 64
   timer: {fileID: 1737918933}
   bestScore: {fileID: 11400000, guid: b7a7cc54d41cc6241861761fc6890346, type: 2}
-  numberOfRandomMove: 2
+  numberOfRandomMove: 100
 --- !u!1 &768268892
 GameObject:
   m_ObjectHideFlags: 0
