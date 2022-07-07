@@ -1,3 +1,4 @@
+using System.Diagnostics.SymbolStore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,7 +41,7 @@ public class Board
     }
 
 
-    public void CreateTiles(Transform tilePrefab, Sprite[] sections, Transform parent)
+    public void CreateTiles(Transform tilePrefab, Material[] sections)
     {
         for(int y = 0; y < height; y++)
         {
@@ -52,21 +53,16 @@ public class Board
                     continue;
                 }
 
-                Transform tileTransform = GameObject.Instantiate(tilePrefab);
-                tileTransform.SetParent(parent);
-                tileTransform.localPosition = GetWorldPosition(pos);
-                tileTransform.localRotation = Quaternion.identity;
+                Transform tileTransform = GameObject.Instantiate(tilePrefab, GetWorldPosition(pos), Quaternion.identity);
 
-                Image section = tileTransform.GetComponent<Image>();
-                section.sprite = sections[x + width*y];
-                Debug.Log(x + width*y);
+                tileTransform.GetComponent<MeshRenderer>().material = sections[x + width*y];
             }
         }
     }
 
     public Vector3 GetWorldPosition(BoardPosition pos)
     {
-        return new Vector3(pos.x, pos.y, 0) * cellSize;
+        return new Vector3(pos.x, 0, pos.y) * cellSize; //1 is for the offset from the plane
     }
 
     public BoardPosition GetBoardPosition(Vector3 worldPosition)
@@ -76,6 +72,22 @@ public class Board
             Mathf.RoundToInt(worldPosition.z / cellSize)
         );
     }
+
+    public bool isValidMove(BoardPosition position){
+        return  position.x >= 0 && 
+                position.y >= 0 && 
+                position.x < width && 
+                position.y < height && // position selected is on the board
+                isOrthogonalNeighbor(position) // and position is a neighbor
+                ;
+    }
+
+    public bool isOrthogonalNeighbor(BoardPosition position)
+    {
+        // we don't want any diagonal moves which is equivalent to only moves of Manhattan distance 1
+        return emptyPos.ManhattanDistance(position) == 1; 
+    }
+    
 
 
     public int GetWidth()

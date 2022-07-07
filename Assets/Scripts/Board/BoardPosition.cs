@@ -1,3 +1,4 @@
+using System.Xml.Schema;
 using System;
 
 public struct BoardPosition : IEquatable<BoardPosition>
@@ -27,7 +28,7 @@ public struct BoardPosition : IEquatable<BoardPosition>
     public override string ToString()
     {
         // string interpolation (f-string in pzthon)
-        return $"x: {x}; z: {y};"; 
+        return $"x: {x}; y: {y};"; 
     }
 
     public override int GetHashCode()
@@ -36,6 +37,11 @@ public struct BoardPosition : IEquatable<BoardPosition>
         hashCode = hashCode * -1521134295 + x.GetHashCode();
         hashCode = hashCode * -1521134295 + y.GetHashCode();
         return hashCode;
+    }
+
+    public int ManhattanDistance(BoardPosition b)
+    {
+        return Math.Abs((this-b).x) + Math.Abs((this-b).y);
     }
 
     public static bool operator ==(BoardPosition a, BoardPosition b) {
