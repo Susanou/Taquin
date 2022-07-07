@@ -75,12 +75,7 @@ public class Board
     }
 
     public bool isValidMove(BoardPosition position){
-        return  position.x >= 0 && 
-                position.y >= 0 && 
-                position.x < width && 
-                position.y < height && // position selected is on the board
-                isOrthogonalNeighbor(position) // and position is a neighbor
-                ;
+        return  position == emptyPos;
     }
 
     private bool isOrthogonalNeighbor(BoardPosition position)

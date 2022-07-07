@@ -17,6 +17,8 @@ public class GameBoard : MonoBehaviour
     private Camera mainCamera;
     private TileObject selectedTile;
     private bool isBusy;
+    private bool isDragging;
+    private BoardPosition endPosition;
 
     private void Awake() {
 
@@ -53,34 +55,50 @@ public class GameBoard : MonoBehaviour
 
         if (isBusy) return;
 
-        if (Touchscreen.current.primaryTouch.press.isPressed)
+        if (!Touchscreen.current.primaryTouch.press.isPressed)
         {
-            BoardPosition position = board.GetBoardPosition(MouseWorld.GetPosition());
-            //Debug.Log(position);
-            //Debug.Log(board.isValidMove(position));
+            if(isDragging && selectedTile != null)
+            {
 
-            if(!TryHandleTileSelection(position)) return;
+                if(board.isValidMove(board.GetBoardPosition(MouseWorld.GetPosition())))
+                {    
+                    StartCoroutine(TileLerpAnimation(board.GetEmptyTilePosition()));
+                    board.MoveTiles(selectedTile);
+                }
+                else
+                {
+                    StartCoroutine(TileLerpAnimation(selectedTile.GetPosition()));
+                }
+            }
 
-            StartCoroutine(TileLerpAnimation(board.GetEmptyTilePosition()));
-            board.MoveTiles(selectedTile);
-            
+            isDragging = false;
+            return;
         }
+        
+        isDragging = true;
+
+        if(selectedTile == null)
+        {
+            if(!TryHandleTileSelection()) return;
+        }
+
+        selectedTile.transform.position = new Vector3(MouseWorld.GetPosition().x, 5f, MouseWorld.GetPosition().z); // offset of 5 just to show the tile moving up and being selected
     }
     
-    public bool TryHandleTileSelection(BoardPosition position)
+    public bool TryHandleTileSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Touchscreen.current.position.ReadValue());
         
         if(Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, tileLayerMask))
         {
-            if(raycastHit.transform.TryGetComponent<TileObject>(out TileObject tile) && board.isValidMove(position))
+            if(raycastHit.transform.TryGetComponent<TileObject>(out TileObject tile))
             {
-                Debug.Log("tile selected");
+                //Debug.Log("tile selected");
                 SetSelectedTile(tile);
                 return true;
             }
         }
-        Debug.Log("Nothing found");
+        //Debug.Log("Nothing found");
         return false;
     }
 
@@ -89,11 +107,11 @@ public class GameBoard : MonoBehaviour
         this.selectedTile = tile;
     }
 
-    public IEnumerator TileLerpAnimation(BoardPosition emptyPosition)
+    public IEnumerator TileLerpAnimation(BoardPosition finalPosition)
     {
         isBusy = true;
         float elapsedTime = 0;
-        Vector3 emptyWorldPosition = board.GetWorldPosition(emptyPosition);
+        Vector3 emptyWorldPosition = board.GetWorldPosition(finalPosition);
 
         while (elapsedTime < waitTime)
         {
