@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using SceneTransitionSystem;
 
 public class GameBoard : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Material[] androidSections;
     [SerializeField] private Transform tilePrefab;
     [SerializeField] private LayerMask tileLayerMask;
+    [SerializeField] private Timer timer;
+    [SerializeField] private FloatValue bestScore;
 
     private Board board;
     private Camera mainCamera;
@@ -48,6 +52,7 @@ public class GameBoard : MonoBehaviour
 
     private void Start() {
         mainCamera = Camera.main;
+        timer.StartClock();
     }
 
 
@@ -128,5 +133,13 @@ public class GameBoard : MonoBehaviour
         isBusy = false;
 
         yield return null;
+    }
+
+    public void EndGame()
+    {
+        bestScore.initialValue = timer.StopClock();
+        bestScore.RuntimeValue = bestScore.initialValue;
+
+        STSSceneManager.LoadScene("Home");
     }
 }
