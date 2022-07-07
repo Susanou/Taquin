@@ -74,8 +74,11 @@ public class Board
         );
     }
 
-    public bool isValidMove(BoardPosition position){
-        return  position == emptyPos;
+    public bool isValidMove(TileObject tile, BoardPosition endPosition){
+
+        BoardPosition tilePosition = tile.GetPosition();
+
+        return  isOrthogonalNeighbor(tilePosition) && endPosition == emptyPos;
     }
 
     private bool isOrthogonalNeighbor(BoardPosition position)

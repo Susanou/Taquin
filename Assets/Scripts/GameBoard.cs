@@ -60,7 +60,7 @@ public class GameBoard : MonoBehaviour
             if(isDragging && selectedTile != null)
             {
 
-                if(board.isValidMove(board.GetBoardPosition(MouseWorld.GetPosition())))
+                if(board.isValidMove(selectedTile, board.GetBoardPosition(MouseWorld.GetPosition())))
                 {    
                     StartCoroutine(TileLerpAnimation(board.GetEmptyTilePosition()));
                     board.MoveTiles(selectedTile);
