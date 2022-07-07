@@ -56,6 +56,7 @@ public class Board
                 Transform tileTransform = GameObject.Instantiate(tilePrefab, GetWorldPosition(pos), Quaternion.identity);
 
                 tileTransform.GetComponent<MeshRenderer>().material = sections[x + width*y];
+                tileTransform.GetComponent<TileObject>().SetTileObject(tiles[x, y]);
             }
         }
     }
@@ -82,13 +83,27 @@ public class Board
                 ;
     }
 
-    public bool isOrthogonalNeighbor(BoardPosition position)
+    private bool isOrthogonalNeighbor(BoardPosition position)
     {
         // we don't want any diagonal moves which is equivalent to only moves of Manhattan distance 1
         return emptyPos.ManhattanDistance(position) == 1; 
     }
     
+    public void MoveTiles(TileObject selectedTile)
+    {
+        BoardPosition position = selectedTile.GetPosition();
 
+        tiles[emptyPos.x, emptyPos.y].isEmpty = false;
+        tiles[position.x, position.y].isEmpty = true;
+
+        selectedTile.SetTileObject(tiles[emptyPos.x, emptyPos.y]);
+        emptyPos = position;
+    }
+
+    public BoardPosition GetEmptyTilePosition()
+    {
+        return this.emptyPos;
+    }
 
     public int GetWidth()
     {

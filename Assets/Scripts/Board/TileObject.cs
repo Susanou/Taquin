@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class TileObject : MonoBehaviour
 {
-
-    [SerializeField] private Image image;
     private Tile tile;
 
     public void SetTileObject(Tile tile)
@@ -14,9 +12,8 @@ public class TileObject : MonoBehaviour
         this.tile = tile;
     }
 
-    // Update is called once per frame
-    void Update()
+    public BoardPosition GetPosition()
     {
-        
+        return tile.GetPosition();
     }
 }

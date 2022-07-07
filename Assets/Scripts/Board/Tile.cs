@@ -21,4 +21,9 @@ public class Tile
         return position.ToString();
     }
 
+    public BoardPosition GetPosition()
+    {
+        return this.position;
+    }
+
 }
