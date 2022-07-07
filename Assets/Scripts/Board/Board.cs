@@ -30,6 +30,7 @@ public class Board
         tiles = new Tile[width, height];
 
 
+        // Generate the board with an empty spot in the middle
         for (int x = 0; x < width; x++)
         {
             for(int y = 0; y < height; y++)
@@ -56,6 +57,8 @@ public class Board
         tileObjects = new Transform[width,height];
         solvedBoard = new Transform[width,height];
 
+        // create the associated physical game tiles
+        // and keep a reference of the solved board in order to check when the board has been solved
         for(int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -145,6 +148,8 @@ public class Board
     {
         //PrintBoard();
         
+        //Once the position has been randomized
+        // We go through each tile object and set their new positions
         foreach (Transform tile in tileObjects)
         {
             if(tile != null)
@@ -179,8 +184,8 @@ public class Board
         return  position.x >= 0 && 
                 position.y >= 0 && 
                 position.x < width && 
-                position.y < height &&
-                IsOrthogonalNeighbor(position);
+                position.y < height && // position must be on the board
+                IsOrthogonalNeighbor(position); // and also must be a neighbor of the empty position
     }
 
     private bool IsOrthogonalNeighbor(BoardPosition position)
@@ -225,7 +230,7 @@ public class Board
 
                 if(x == y && y == 1) continue; // skip the tile that is supposed to be empty
 
-                if(tileObjects[x, y] == null || solvedBoard[x, y] == null)
+                if(tileObjects[x, y] == null) // if the tile is null then it isn't in the correct position
                     return false;
 
                 if(tileObjects[x, y] != solvedBoard[x, y])

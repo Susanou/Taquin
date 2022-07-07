@@ -86,6 +86,7 @@ public class GameBoard : MonoBehaviour
                 }
                 else
                 {
+                    //get back to the original position if the move isn't valid
                     StartCoroutine(TileLerpAnimation(selectedTile.GetPosition()));
                 }
             }
@@ -151,6 +152,7 @@ public class GameBoard : MonoBehaviour
     
     public IEnumerator TileLerpAnimation(BoardPosition finalPosition)
     {
+        // Small animation when dropping the tile in position
         isBusy = true;
         float elapsedTime = 0;
         Vector3 emptyWorldPosition = board.GetWorldPosition(finalPosition);
