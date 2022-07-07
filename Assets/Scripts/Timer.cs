@@ -13,18 +13,8 @@ public class Timer : MonoBehaviour
 
     private void Start()
     {
-        if(timeRemaining.name == "BestScore")
-        {
-            timerIsRunning = false;
-            
-        }
-        else
-        {
-            // Starts the timer automatically
-            timerIsRunning = true;
-        }
         if (timeRemaining.RuntimeValue < 0)
-            DisplayTime(0);
+            DisplayTime(-1);
         else
             DisplayTime(timeRemaining.RuntimeValue);
     }
@@ -59,7 +49,6 @@ public class Timer : MonoBehaviour
         float minutes = Mathf.FloorToInt(timeToDisplay / 60); 
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-        Debug.Log("Display time");
     }
 
     public float StopClock()
@@ -72,5 +61,10 @@ public class Timer : MonoBehaviour
     {
         timeRemaining.RuntimeValue = timeRemaining.initialValue;
         timerIsRunning = true;
+    }
+
+    public void PauseClock()
+    {
+        timerIsRunning = false;
     }
 }

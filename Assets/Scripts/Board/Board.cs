@@ -7,6 +7,7 @@ using UnityEngine.UI;
 // class used for all the board related checks and conversions
 public class Board
 {
+    public Transform[,] tileObjects;
 
     private int width;
     private int height;
@@ -33,16 +34,21 @@ public class Board
                     tiles[x, y] = new Tile(this, pos, true);
                     emptyPos = pos;
                 }
-
-                tiles[x, y] = new Tile(this, pos, false);
+                else
+                    tiles[x, y] = new Tile(this, pos, false);
             }
         }
 
+
+        PrintBoard();
     }
 
 
     public void CreateTiles(Transform tilePrefab, Material[] sections)
     {
+
+        tileObjects = new Transform[width,height];
+
         for(int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -57,8 +63,85 @@ public class Board
 
                 tileTransform.GetComponent<MeshRenderer>().material = sections[x + width*y];
                 tileTransform.GetComponent<TileObject>().SetTileObject(tiles[x, y]);
+
+                tileObjects[x,y] = tileTransform;
             }
         }
+    }
+
+        public void RandomizeBoard(int numberOfRandomMove)
+    {
+        int numberOfMove = 0;
+        while(numberOfMove < numberOfRandomMove)
+        {
+            // 0 = move up      => y-1
+            // 1 = move right   => x-1
+            // 2 = move down    => y+1
+            // 3 = move left    => x+1
+
+            int move = Random.Range(0, 16) % 4; //choose a random move for the middle spot to ensure that the board is solvable
+            
+            BoardPosition emptyPosition = GetEmptyTilePosition();
+            BoardPosition newPosition;
+
+            switch(move)
+            {
+                case 0:
+                    newPosition = new BoardPosition(emptyPosition.x, emptyPosition.y-1);
+                    break;
+                case 1:
+                    newPosition = new BoardPosition(emptyPosition.x-1, emptyPosition.y);
+                    break;
+                case 2:
+                    newPosition = new BoardPosition(emptyPosition.x, emptyPosition.y+1);
+                    break;
+                default:
+                    newPosition = new BoardPosition(emptyPosition.x+1, emptyPosition.y);
+                    break;
+            }
+
+            
+
+            if(isValidMove(newPosition))
+            {
+                Debug.Log(newPosition);
+                TileObject selectedTile = GetTileObjectFromPosition(newPosition).GetComponent<TileObject>();
+                MoveTiles(selectedTile);
+                numberOfMove++;
+                //Debug.Log(move);
+            }
+            else
+            {
+                continue;
+            }
+
+        }
+
+        ResetTilePositions();
+    }
+
+    private void PrintBoard()
+    {
+        Debug.Log("Board");
+
+        for(int y = 0; y < height; y++)
+        {
+            Debug.Log(tiles[width-1, y].isEmpty + " " + tiles[width-2, y].isEmpty + " " + tiles[width-3, y].isEmpty);
+        }
+    }
+
+
+    public void ResetTilePositions()
+    {
+        PrintBoard();
+        
+        foreach (Transform tile in tileObjects)
+        {
+            if(tile != null)
+                tile.transform.position = GetWorldPosition(tile.GetComponent<TileObject>().GetPosition());
+        }
+
+        GameBoard.Instance.StartGame();
     }
 
     public Vector3 GetWorldPosition(BoardPosition pos)
@@ -78,10 +161,19 @@ public class Board
 
         BoardPosition tilePosition = tile.GetPosition();
 
-        return  isOrthogonalNeighbor(tilePosition) && endPosition == emptyPos;
+        return  IsOrthogonalNeighbor(tilePosition) && endPosition == emptyPos;
     }
 
-    private bool isOrthogonalNeighbor(BoardPosition position)
+    public bool isValidMove(BoardPosition position)
+    {
+        return  position.x >= 0 && 
+                position.y >= 0 && 
+                position.x < width && 
+                position.y < height &&
+                IsOrthogonalNeighbor(position);
+    }
+
+    private bool IsOrthogonalNeighbor(BoardPosition position)
     {
         // we don't want any diagonal moves which is equivalent to only moves of Manhattan distance 1
         return emptyPos.ManhattanDistance(position) == 1; 
@@ -91,11 +183,26 @@ public class Board
     {
         BoardPosition position = selectedTile.GetPosition();
 
+        //Debug.Log(position == emptyPos);
+
+        //change status of board tiles
         tiles[emptyPos.x, emptyPos.y].isEmpty = false;
         tiles[position.x, position.y].isEmpty = true;
 
+        //change position of physical tiles in the array
+        tileObjects[position.x, position.y] = null;
+        tileObjects[emptyPos.x, emptyPos.y] = selectedTile.transform;
+
+        //change the tile links
         selectedTile.SetTileObject(tiles[emptyPos.x, emptyPos.y]);
         emptyPos = position;
+
+        PrintBoard();
+    }
+
+    public Transform GetTileObjectFromPosition(BoardPosition position)
+    {
+        return tileObjects[position.x, position.y];
     }
 
     public BoardPosition GetEmptyTilePosition()

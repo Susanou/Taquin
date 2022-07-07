@@ -16,7 +16,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private LayerMask tileLayerMask;
     [SerializeField] private Timer timer;
     [SerializeField] private FloatValue bestScore;
-    [SerializeField] private int numberRandomMove;
+    [SerializeField] private int numberOfRandomMove;
 
     private Board board;
     private Camera mainCamera;
@@ -49,11 +49,18 @@ public class GameBoard : MonoBehaviour
         {
             board.CreateTiles(tilePrefab, appleSections);
         }
+
+        //isBusy = true;
     }
 
     private void Start() {
         mainCamera = Camera.main;
-        timer.StartClock();
+        timer.PauseClock();
+    }
+
+    public void RandomizeBoard()
+    {
+        board.RandomizeBoard(numberOfRandomMove);
     }
 
 
@@ -89,6 +96,8 @@ public class GameBoard : MonoBehaviour
         }
 
         selectedTile.transform.position = new Vector3(MouseWorld.GetPosition().x, 5f, MouseWorld.GetPosition().z); // offset of 5 just to show the tile moving up and being selected
+
+        //Debug.Log(board.GetBoardPosition(MouseWorld.GetPosition()));
     }
     
     public bool TryHandleTileSelection()
@@ -108,16 +117,32 @@ public class GameBoard : MonoBehaviour
         return false;
     }
 
-    public void RandomizeBoard()
-    {
-        
-    }
+
 
     public void SetSelectedTile(TileObject tile)
     {
         this.selectedTile = tile;
     }
 
+    public void EndGame(bool exited)
+    {
+
+        if (exited) // if we used the button the score doesn't count
+        {
+            STSSceneManager.LoadScene("Home");
+            return;
+        }
+
+        float score = timer.StopClock();
+
+        if (score > bestScore.RuntimeValue)
+        {
+            bestScore.initialValue = score;
+            bestScore.RuntimeValue = bestScore.initialValue;
+        }
+        STSSceneManager.LoadScene("Home");
+    }
+    
     public IEnumerator TileLerpAnimation(BoardPosition finalPosition)
     {
         isBusy = true;
@@ -141,21 +166,8 @@ public class GameBoard : MonoBehaviour
         yield return null;
     }
 
-    public void EndGame(bool exited)
-    {
-
-        if (exited) // if we used the button the score doesn't count
-        {
-            STSSceneManager.LoadScene("Home");
-        }
-
-        float score = timer.StopClock();
-
-        if (score > bestScore.RuntimeValue)
-        {
-            bestScore.initialValue = score;
-            bestScore.RuntimeValue = bestScore.initialValue;
-        }
-        STSSceneManager.LoadScene("Home");
+    public void StartGame(){
+        timer.StartClock();
+        isBusy = false;
     }
 }

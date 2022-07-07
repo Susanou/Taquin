@@ -26,4 +26,9 @@ public class Tile
         return this.position;
     }
 
+    public void SetPosition(BoardPosition position)
+    {
+        this.position = position;
+    }
+
 }
