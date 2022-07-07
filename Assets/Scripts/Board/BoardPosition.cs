@@ -3,6 +3,12 @@ using System;
 
 public struct BoardPosition : IEquatable<BoardPosition>
 {
+
+    /*
+    Custom Struct for the board itself to have its own coordinate system
+    used to validate moves
+    */
+
     public int x;
     public int y;
 
@@ -16,8 +22,8 @@ public struct BoardPosition : IEquatable<BoardPosition>
     public override bool Equals(object obj)
     {
         return obj is BoardPosition position &&
-               x == position.x &&
-               y == position.y;
+            x == position.x &&
+            y == position.y;
     }
 
     public bool Equals(BoardPosition other)

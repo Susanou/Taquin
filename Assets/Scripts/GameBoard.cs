@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using SceneTransitionSystem;
 
+/// <summary>
+/// Class that handles of the game user inputs
+/// </summary>
 public class GameBoard : MonoBehaviour
 {
     public static GameBoard Instance {get; private set;}
@@ -70,9 +73,12 @@ public class GameBoard : MonoBehaviour
 
         if (!Touchscreen.current.primaryTouch.press.isPressed)
         {
+            //Only execute when there is a tile selected
             if(isDragging && selectedTile != null)
             {
-
+                
+                //Once done dragging check if the move made is valid.
+                //If it is start the animations
                 if(board.isValidMove(selectedTile, board.GetBoardPosition(MouseWorld.GetPosition())))
                 {    
                     StartCoroutine(TileLerpAnimation(board.GetEmptyTilePosition()));

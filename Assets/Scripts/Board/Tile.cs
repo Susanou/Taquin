@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+/// <summary>
+/// Class for the board's own tile and records their position rather than their position in the array
+/// </summary>
 public class Tile
 {
     private Board board;

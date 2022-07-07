@@ -4,7 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// class used for all the board related checks and conversions
+/// <summary>
+/// Class for the game board
+/// Stores a list of tiles and physical game tiles in order to go from Game coordinates to world coordinates
+/// This class also handles all of the game logic
+/// </summary>
 public class Board
 {
     public Transform[,] tileObjects;
@@ -14,6 +18,7 @@ public class Board
     private float cellSize;
     private Tile[,] tiles; // array to store the position of each tile
     private BoardPosition emptyPos;
+    private Transform[,] solvedBoard;
 
     public Board(int width, int height, float cellSize)
     {
@@ -48,6 +53,7 @@ public class Board
     {
 
         tileObjects = new Transform[width,height];
+        solvedBoard = new Transform[width,height];
 
         for(int y = 0; y < height; y++)
         {
@@ -65,6 +71,7 @@ public class Board
                 tileTransform.GetComponent<TileObject>().SetTileObject(tiles[x, y]);
 
                 tileObjects[x,y] = tileTransform;
+                solvedBoard[x,y] = tileTransform;
             }
         }
     }
@@ -133,7 +140,7 @@ public class Board
 
     public void ResetTilePositions()
     {
-        PrintBoard();
+        //PrintBoard();
         
         foreach (Transform tile in tileObjects)
         {
@@ -197,7 +204,33 @@ public class Board
         selectedTile.SetTileObject(tiles[emptyPos.x, emptyPos.y]);
         emptyPos = position;
 
-        PrintBoard();
+        //PrintBoard();
+
+        if (IsSolved())
+        {
+            GameBoard.Instance.EndGame(false);
+        }
+    }
+
+    public bool IsSolved()
+    {
+
+        for (int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+
+                if(x == y && y == 1) continue; // skip the tile that is supposed to be empty
+
+                if(tileObjects[x, y] == null || solvedBoard[x, y] == null)
+                    return false;
+
+                if(tileObjects[x, y] != solvedBoard[x, y])
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     public Transform GetTileObjectFromPosition(BoardPosition position)
