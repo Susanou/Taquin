@@ -489,6 +489,7 @@ MonoBehaviour:
     m_Bits: 64
   timer: {fileID: 1737918933}
   bestScore: {fileID: 11400000, guid: b7a7cc54d41cc6241861761fc6890346, type: 2}
+  numberRandomMove: 0
 --- !u!1 &768268892
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,7 +727,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1226613164}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 639371824}
+        m_TargetAssemblyTypeName: GameBoard, Assembly-CSharp
+        m_MethodName: RandomizeBoard
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1226613164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1017,17 +1030,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 768268893}
-        m_TargetAssemblyTypeName: TeasingGame.TeasingGameHomeSceneController, Assembly-CSharp
-        m_MethodName: GoToGameScene
-        m_Mode: 1
+      - m_Target: {fileID: 639371824}
+        m_TargetAssemblyTypeName: GameBoard, Assembly-CSharp
+        m_MethodName: EndGame
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1467525019
 MonoBehaviour:

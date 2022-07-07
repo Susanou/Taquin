@@ -16,6 +16,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private LayerMask tileLayerMask;
     [SerializeField] private Timer timer;
     [SerializeField] private FloatValue bestScore;
+    [SerializeField] private int numberRandomMove;
 
     private Board board;
     private Camera mainCamera;
@@ -107,6 +108,11 @@ public class GameBoard : MonoBehaviour
         return false;
     }
 
+    public void RandomizeBoard()
+    {
+        
+    }
+
     public void SetSelectedTile(TileObject tile)
     {
         this.selectedTile = tile;
@@ -135,11 +141,21 @@ public class GameBoard : MonoBehaviour
         yield return null;
     }
 
-    public void EndGame()
+    public void EndGame(bool exited)
     {
-        bestScore.initialValue = timer.StopClock();
-        bestScore.RuntimeValue = bestScore.initialValue;
 
+        if (exited) // if we used the button the score doesn't count
+        {
+            STSSceneManager.LoadScene("Home");
+        }
+
+        float score = timer.StopClock();
+
+        if (score > bestScore.RuntimeValue)
+        {
+            bestScore.initialValue = score;
+            bestScore.RuntimeValue = bestScore.initialValue;
+        }
         STSSceneManager.LoadScene("Home");
     }
 }

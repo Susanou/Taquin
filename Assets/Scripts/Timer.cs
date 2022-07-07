@@ -9,20 +9,24 @@ public class Timer : MonoBehaviour
     [SerializeField] private FloatValue timeRemaining;
     [SerializeField] private Text timeText;
     private bool timerIsRunning = false;
-    
+
 
     private void Start()
     {
-        if(SceneManager.GetActiveScene().name == "Home")
+        if(timeRemaining.name == "BestScore")
         {
-            if (timeRemaining.RuntimeValue < 0)
-                DisplayTime(-1);
+            timerIsRunning = false;
+            
         }
         else
         {
             // Starts the timer automatically
             timerIsRunning = true;
         }
+        if (timeRemaining.RuntimeValue < 0)
+            DisplayTime(0);
+        else
+            DisplayTime(timeRemaining.RuntimeValue);
     }
     void Update()
     {
@@ -38,8 +42,15 @@ public class Timer : MonoBehaviour
                 Debug.Log("Time has run out!");
                 timeRemaining.RuntimeValue = 0;
                 timerIsRunning = false;
-                GameBoard.Instance.EndGame();
+                GameBoard.Instance.EndGame(false);
             }
+        }
+        else
+        {
+            if (timeRemaining.RuntimeValue < 0)
+                DisplayTime(0);
+            else
+                DisplayTime(timeRemaining.RuntimeValue);
         }
     }
     void DisplayTime(float timeToDisplay)
@@ -48,6 +59,7 @@ public class Timer : MonoBehaviour
         float minutes = Mathf.FloorToInt(timeToDisplay / 60); 
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        Debug.Log("Display time");
     }
 
     public float StopClock()
