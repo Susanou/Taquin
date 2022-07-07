@@ -16,6 +16,7 @@ public class GameBoard : MonoBehaviour
     private Board board;
     private Camera mainCamera;
     private TileObject selectedTile;
+    private bool isBusy;
 
     private void Awake() {
 
@@ -49,6 +50,9 @@ public class GameBoard : MonoBehaviour
 
 
     private void Update() {
+
+        if (isBusy) return;
+
         if (Touchscreen.current.primaryTouch.press.isPressed)
         {
             BoardPosition position = board.GetBoardPosition(MouseWorld.GetPosition());
@@ -87,6 +91,7 @@ public class GameBoard : MonoBehaviour
 
     public IEnumerator TileLerpAnimation(BoardPosition emptyPosition)
     {
+        isBusy = true;
         float elapsedTime = 0;
         Vector3 emptyWorldPosition = board.GetWorldPosition(emptyPosition);
 
@@ -101,6 +106,9 @@ public class GameBoard : MonoBehaviour
         // Make sure we got there
         selectedTile.transform.position = emptyWorldPosition;
         selectedTile = null;
+
+        isBusy = false;
+
         yield return null;
     }
 }

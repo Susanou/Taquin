@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d11134ac795d5b74b980e9671edb1adb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitTime: 3
+  waitTime: 0.1
   appleSections:
   - {fileID: 2100000, guid: 81f556ef5a648c143b64207d1eca1dc2, type: 2}
   - {fileID: 2100000, guid: 86285769220541e41887e9b1acf40b08, type: 2}
