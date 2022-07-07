@@ -19,6 +19,7 @@ public class Board
     private Tile[,] tiles; // array to store the position of each tile
     private BoardPosition emptyPos;
     private Transform[,] solvedBoard;
+    private bool randomizing;
 
     public Board(int width, int height, float cellSize)
     {
@@ -76,8 +77,9 @@ public class Board
         }
     }
 
-        public void RandomizeBoard(int numberOfRandomMove)
+    public void RandomizeBoard(int numberOfRandomMove)
     {
+        randomizing = true;
         int numberOfMove = 0;
         while(numberOfMove < numberOfRandomMove)
         {
@@ -125,6 +127,7 @@ public class Board
         }
 
         ResetTilePositions();
+        randomizing = false;
     }
 
     private void PrintBoard()
@@ -206,7 +209,7 @@ public class Board
 
         //PrintBoard();
 
-        if (IsSolved())
+        if (!randomizing && IsSolved())
         {
             GameBoard.Instance.EndGame(false);
         }
